@@ -1,9 +1,9 @@
 import NotFoundComponent from "Xprompt/components/notFoundComponent";
 
-function NotFoundPage() {
+function ErrorPage() {
   return <NotFoundComponent />;
 }
 
-NotFoundPage.hideLayout = true;
+ErrorPage.hideLayout = true;
 
-export default NotFoundPage;
+export default ErrorPage;

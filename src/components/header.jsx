@@ -1,20 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useCart } from "../context/CartContext";
 
 function NavbarComponent() {
+  const { itemCount } = useCart();
+
   return (
-    <nav className="static top-0 z-20 w-full border-b border-slate-200 bg-white/90 backdrop-blur">
+    <nav className="sticky top-0 z-30 w-full border-b border-slate-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
         <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <Image
             src="https://template.canva.com/EAFaFUz4aKo/3/0/1200w-Sd94vjjru0s.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH7DHWAQDT%2F20260418%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260418T213817Z&X-Amz-Expires=87319&X-Amz-Signature=200b5d439ac8bc0645884cd37c7af0ef43a3ef806acd35017c9d441074336e64&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sun%2C%2019%20Apr%202026%2021%3A53%3A36%20GMT"
-         
             alt="Logo"
             width={90}
             height={90}
             unoptimized
           />
-        
         </Link>
 
         <button
@@ -48,25 +49,30 @@ function NavbarComponent() {
             <li>
               <Link
                 href="/"
-                className="block rounded px-3 py-2 text-slate-600 active:text-slate-950   hover:text-slate-500 md:p-0"
+                className="block rounded px-3 py-2 text-slate-600 hover:text-slate-950 md:p-0"
               >
                 Home
               </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="/aboutus"
-                className="block rounded px-3 py-2 text-slate-600 active:text-slate-950   hover:text-slate-500 md:p-0 md:hover:bg-transparent"
+                className="block rounded px-3 py-2 text-slate-600 hover:text-slate-950 md:p-0 md:hover:bg-transparent"
               >
                 About Us
-              </a>
+              </Link>
             </li>
             <li>
-              <button type="button" class="text-white bg-blue-700 box-border border border-transparent hover:bg-blue-800 active:bg-blue-400 focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">Register</button>
-
+              <Link
+                href="/cart"
+                className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+              >
+                Cart
+                <span className="rounded-full bg-white/15 px-2 py-0.5 text-xs">
+                  {itemCount}
+                </span>
+              </Link>
             </li>
-           
-          
           </ul>
         </div>
       </div>

@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
+import { useCart } from "Xprompt/context/CartContext";
+import { getRecipePrice } from "../../lib/recipePricing";
+import { getAllRecipes } from "../../lib/recipesService";
 import HeroSection from "./components/HeroSection";
-import ProductCarousel from "./components/ProductCarousel";
+import PageMessage from "./components/PageMessage";
+import RecipeCarousel from "./components/RecipeCarousel";
 import RecipeFormModal from "./components/RecipeFormModal";
+import RecipeSectionHeader from "./components/RecipeSectionHeader";
 import {
   createRecipe,
   deleteRecipe,
@@ -10,6 +15,7 @@ import {
 } from "../../lib/recipesApi";
 
 function HomePage({ initialRecipes = [] }) {
+  const { addToCart } = useCart();
   const [recipes, setRecipes] = useState(initialRecipes);
   const [isLoading, setIsLoading] = useState(initialRecipes.length === 0);
   const [error, setError] = useState("");
@@ -19,10 +25,10 @@ function HomePage({ initialRecipes = [] }) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    loadRecipes(initialRecipes.length === 0);
-  }, []);
+    refreshRecipes(initialRecipes.length === 0);
+  }, [initialRecipes.length]);
 
-  async function loadRecipes(showLoader = true) {
+  async function refreshRecipes(showLoader = true) {
     if (showLoader) {
       setIsLoading(true);
     }
@@ -68,7 +74,7 @@ function HomePage({ initialRecipes = [] }) {
         await createRecipe(formData);
       }
 
-      await loadRecipes();
+      await refreshRecipes(false);
       handleCloseModal();
     } catch (saveError) {
       setError(saveError.message);
@@ -86,50 +92,35 @@ function HomePage({ initialRecipes = [] }) {
     }
   }
 
+  function handleBuyRecipe(recipe) {
+    addToCart({
+      ...recipe,
+      title: recipe.name,
+      thumbnail: recipe.image,
+      price: getRecipePrice(recipe),
+    });
+  }
+
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,_#f8fafc_0%,_#eef4ff_45%,_#ffffff_100%)] text-slate-900">
-      <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 pb-16 pt-28 sm:px-6 sm:pt-32 lg:px-8">
+      <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 pb-16 pt-14 sm:px-6 lg:px-8">
         <HeroSection />
 
         <section className="mt-16">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
-                Recipe collection
-              </p>
-              <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
-                Manage recipes from your local json-server database.
-              </h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-                Add new recipes, edit existing ones, remove entries, and open a
-                dedicated details page for each recipe.
-              </p>
-            </div>
+          <RecipeSectionHeader onAddRecipe={handleOpenAddModal} />
 
-            <button
-              type="button"
-              onClick={handleOpenAddModal}
-              className="rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-            >
-              Add recipe
-            </button>
-          </div>
-
-          {error ? (
-            <div className="mt-6 rounded-[1.5rem] border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
-              {error}
-            </div>
-          ) : null}
+          {error ? <PageMessage tone="error">{error}</PageMessage> : null}
 
           {isLoading ? (
-            <div className="mt-8 rounded-[1.75rem] border border-slate-200 bg-white p-8 text-sm text-slate-500 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
-              Loading recipes from json-server...
-            </div>
+            <PageMessage>
+              Loading recipes from MongoDB...
+            </PageMessage>
           ) : (
-            <ProductCarousel
+            <RecipeCarousel
               recipes={recipes}
               onEdit={handleOpenEditModal}
               onDelete={handleDeleteRecipe}
+              onBuy={handleBuyRecipe}
             />
           )}
         </section>
@@ -152,21 +143,20 @@ export default HomePage;
 
 export async function getStaticProps() {
   try {
-    const response = await fetch("https://dummyjson.com/recipes?limit=12");
-    const data = await response.json();
+    const initialRecipes = await getAllRecipes();
 
     return {
       props: {
-        initialRecipes: data.recipes ?? [],
+        initialRecipes,
       },
-      revalidate: 3600,
+      revalidate: 10,
     };
   } catch {
     return {
       props: {
         initialRecipes: [],
       },
-      revalidate: 300,
+      revalidate: 10,
     };
   }
 }

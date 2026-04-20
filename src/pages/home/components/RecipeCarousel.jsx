@@ -1,15 +1,16 @@
-import ProductCard from "./ProductCard";
+import RecipeCard from "./RecipeCard";
 
-function ProductCarousel({ recipes = [], onEdit, onDelete }) {
+function RecipeCarousel({ recipes = [], onEdit, onDelete, onBuy }) {
   return (
     <div className="mt-8">
       <div className="home-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4">
         {recipes.map((recipe) => (
-          <ProductCard
+          <RecipeCard
             key={recipe.id}
-            product={recipe}
+            recipe={recipe}
             onEdit={onEdit}
             onDelete={onDelete}
+            onBuy={onBuy}
           />
         ))}
       </div>
@@ -17,4 +18,4 @@ function ProductCarousel({ recipes = [], onEdit, onDelete }) {
   );
 }
 
-export default ProductCarousel;
+export default RecipeCarousel;

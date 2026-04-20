@@ -14,24 +14,20 @@ function FooterComponent() {
 
         <ul className="flex flex-wrap items-center gap-4 font-medium">
           <li>
-            <a href="#" className="hover:underline">
+            <Link href="/aboutus" className="hover:underline">
               About
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="#" className="hover:underline">
-              Privacy Policy
-            </a>
+            <span className="text-slate-500">Privacy Policy</span>
           </li>
           <li>
-            <a href="#" className="hover:underline">
-              Licensing
-            </a>
+            <span className="text-slate-500">Licensing</span>
           </li>
           <li>
-            <a href="#" className="hover:underline">
-              Contact
-            </a>
+            <Link href="/cart" className="hover:underline">
+              Cart
+            </Link>
           </li>
         </ul>
       </div>

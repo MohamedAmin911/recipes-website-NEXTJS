@@ -24,7 +24,7 @@ function normalizeRecipeToForm(recipe) {
   }
 
   return {
-    id: recipe.id ?? "",
+    id: recipe.id ?? recipe._id ?? "",
     name: recipe.name ?? "",
     cuisine: recipe.cuisine ?? "",
     difficulty: recipe.difficulty ?? "Easy",
@@ -38,13 +38,13 @@ function normalizeRecipeToForm(recipe) {
     mealType: Array.isArray(recipe.mealType)
       ? recipe.mealType.join(", ")
       : recipe.mealType ?? "Dinner",
-    tags: Array.isArray(recipe.tags) ? recipe.tags.join(", ") : recipe.tags ?? "",
+    tags: Array.isArray(recipe.tags) ? recipe.tags.join(", ") : "",
     ingredients: Array.isArray(recipe.ingredients)
       ? recipe.ingredients.join("\n")
-      : recipe.ingredients ?? "",
+      : "",
     instructions: Array.isArray(recipe.instructions)
       ? recipe.instructions.join("\n")
-      : recipe.instructions ?? "",
+      : "",
   };
 }
 
@@ -87,8 +87,7 @@ function RecipeFormModal({
   function handleSubmit(event) {
     event.preventDefault();
 
-    const payload = {
-      ...(mode === "edit" && formState.id ? { id: Number(formState.id) } : {}),
+    onSubmit({
       name: formState.name.trim(),
       cuisine: formState.cuisine.trim(),
       difficulty: formState.difficulty,
@@ -104,9 +103,7 @@ function RecipeFormModal({
       ingredients: parseLineSeparatedList(formState.ingredients),
       instructions: parseLineSeparatedList(formState.instructions),
       userId: recipe?.userId ?? 1,
-    };
-
-    onSubmit(payload);
+    });
   }
 
   return (

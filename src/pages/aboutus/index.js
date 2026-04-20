@@ -1,12 +1,7 @@
-import React, { Component } from 'react'
-import AboutUsComponent from './components/AboutUsComponent'
+import AboutUsComponent from "./components/AboutUsComponent";
 
-export class AboutUsPage extends Component {
-  render() {
-    return (
-        <AboutUsComponent />
-    )
-  }
+function AboutUsPage() {
+  return <AboutUsComponent />;
 }
 
-export default AboutUsPage
+export default AboutUsPage;
