@@ -9,9 +9,9 @@ import {
   updateRecipe,
 } from "../../lib/recipesApi";
 
-function HomePage() {
-  const [recipes, setRecipes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+function HomePage({ initialRecipes = [] }) {
+  const [recipes, setRecipes] = useState(initialRecipes);
+  const [isLoading, setIsLoading] = useState(initialRecipes.length === 0);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("add");
@@ -19,19 +19,25 @@ function HomePage() {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    loadRecipes();
+    loadRecipes(initialRecipes.length === 0);
   }, []);
 
-  async function loadRecipes() {
-    try {
+  async function loadRecipes(showLoader = true) {
+    if (showLoader) {
       setIsLoading(true);
-      setError("");
+    }
+
+    setError("");
+
+    try {
       const data = await fetchRecipes();
       setRecipes(data);
     } catch (loadError) {
       setError(loadError.message);
     } finally {
-      setIsLoading(false);
+      if (showLoader) {
+        setIsLoading(false);
+      }
     }
   }
 
@@ -143,3 +149,24 @@ function HomePage() {
 }
 
 export default HomePage;
+
+export async function getStaticProps() {
+  try {
+    const response = await fetch("https://dummyjson.com/recipes?limit=12");
+    const data = await response.json();
+
+    return {
+      props: {
+        initialRecipes: data.recipes ?? [],
+      },
+      revalidate: 3600,
+    };
+  } catch {
+    return {
+      props: {
+        initialRecipes: [],
+      },
+      revalidate: 300,
+    };
+  }
+}
