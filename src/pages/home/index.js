@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { useCart } from "Xprompt/context/CartContext";
 import { getRecipePrice } from "../../lib/recipePricing";
 import { getAllRecipes } from "../../lib/recipesService";
@@ -15,6 +16,7 @@ import {
 } from "../../lib/recipesApi";
 
 function HomePage({ initialRecipes = [] }) {
+  const { data: session } = useSession();
   const { addToCart } = useCart();
   const [recipes, setRecipes] = useState(initialRecipes);
   const [isLoading, setIsLoading] = useState(initialRecipes.length === 0);
@@ -101,13 +103,16 @@ function HomePage({ initialRecipes = [] }) {
     });
   }
 
+  // Show only 3 recipes if not signed in
+  const displayedRecipes = session ? recipes : recipes.slice(0, 3);
+
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,_#f8fafc_0%,_#eef4ff_45%,_#ffffff_100%)] text-slate-900">
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 pb-16 pt-14 sm:px-6 lg:px-8">
         <HeroSection />
 
         <section className="mt-16">
-          <RecipeSectionHeader onAddRecipe={handleOpenAddModal} />
+          <RecipeSectionHeader onAddRecipe={handleOpenAddModal} showAddButton={!!session} />
 
           {error ? <PageMessage tone="error">{error}</PageMessage> : null}
 
@@ -117,10 +122,11 @@ function HomePage({ initialRecipes = [] }) {
             </PageMessage>
           ) : (
             <RecipeCarousel
-              recipes={recipes}
+              recipes={displayedRecipes}
               onEdit={handleOpenEditModal}
               onDelete={handleDeleteRecipe}
               onBuy={handleBuyRecipe}
+              showEditDelete={!!session}
             />
           )}
         </section>

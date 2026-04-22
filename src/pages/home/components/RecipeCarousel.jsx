@@ -1,6 +1,6 @@
 import RecipeCard from "./RecipeCard";
 
-function RecipeCarousel({ recipes = [], onEdit, onDelete, onBuy }) {
+function RecipeCarousel({ recipes = [], onEdit, onDelete, onBuy, showEditDelete = true }) {
   return (
     <div className="mt-8">
       <div className="home-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4">
@@ -11,6 +11,7 @@ function RecipeCarousel({ recipes = [], onEdit, onDelete, onBuy }) {
             onEdit={onEdit}
             onDelete={onDelete}
             onBuy={onBuy}
+            showEditDelete={showEditDelete}
           />
         ))}
       </div>

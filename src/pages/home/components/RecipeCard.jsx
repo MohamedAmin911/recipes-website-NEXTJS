@@ -22,6 +22,7 @@ function RecipeCard({
   onEdit = () => {},
   onDelete = () => {},
   onBuy = () => {},
+  showEditDelete = true,
 }) {
   const totalTime =
     Number(recipe.prepTimeMinutes || 0) + Number(recipe.cookTimeMinutes || 0);
@@ -97,28 +98,30 @@ function RecipeCard({
             Buy recipe for ${recipePrice.toFixed(2)}
           </button>
 
-          <div className="grid grid-cols-3 gap-3">
-            <Link
-              href={`/recipes/${recipe.id}`}
-              className="rounded-full border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-            >
-              View
-            </Link>
-            <button
-              type="button"
-              onClick={() => onEdit(recipe)}
-              className="rounded-full border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              onClick={() => onDelete(recipe.id)}
-              className="rounded-full border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 transition hover:bg-red-100"
-            >
-              Delete
-            </button>
-          </div>
+          {showEditDelete && (
+            <div className="grid grid-cols-3 gap-3">
+              <Link
+                href={`/recipes/${recipe.id}`}
+                className="rounded-full border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                View
+              </Link>
+              <button
+                type="button"
+                onClick={() => onEdit(recipe)}
+                className="rounded-full border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                onClick={() => onDelete(recipe.id)}
+                className="rounded-full border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 transition hover:bg-red-100"
+              >
+                Delete
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </article>

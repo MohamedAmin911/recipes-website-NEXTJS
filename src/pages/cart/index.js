@@ -1,9 +1,11 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import QuoteToast from "Xprompt/components/QuoteToast";
 import { useCart } from "Xprompt/context/CartContext";
 
 function CartPage({ initialQuote }) {
+  const { data: session } = useSession();
   const {
     cartItems,
     totalPrice,
@@ -148,7 +150,7 @@ function CartPage({ initialQuote }) {
         </div>
       </div>
 
-      <QuoteToast quote={quote} />
+      {session && <QuoteToast quote={quote} />}
     </main>
   );
 }

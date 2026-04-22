@@ -1,4 +1,4 @@
-function RecipeSectionHeader({ onAddRecipe }) {
+function RecipeSectionHeader({ onAddRecipe, showAddButton = true }) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
@@ -8,13 +8,15 @@ function RecipeSectionHeader({ onAddRecipe }) {
        
       </div>
 
-      <button
-        type="button"
-        onClick={onAddRecipe}
-        className="rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-      >
-        Add recipe
-      </button>
+      {showAddButton && (
+        <button
+          type="button"
+          onClick={onAddRecipe}
+          className="rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+        >
+          Add recipe
+        </button>
+      )}
     </div>
   );
 }
